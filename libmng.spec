@@ -41,6 +41,8 @@ the libmng package.
 %patch0 -p1
 %patch1 -p1
 
+sed -i "s/AM_C_PROTOTYPES//" makefiles/configure.in
+
 %build
 cp makefiles/{Makefile.am,configure.in} .
 cp doc/makefiles/Makefile.am doc
