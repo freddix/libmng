@@ -1,20 +1,18 @@
 Summary:	A library of functions for manipulating MNG format files
 Name:		libmng
-Version:	1.0.10
-Release:	15
+Version:	2.0.2
+Release:	1
 License:	BSD-like
 Group:		Libraries
-Source0:	http://heanet.dl.sourceforge.net/libmng/%{name}-%{version}.tar.gz
-# Source0-md5:	a464ae7d679781beebdf7440d144b7bd
-Patch0:		%{name}-automake.patch
-Patch1:		%{name}-gcc4.patch
+Source0:	http://downloads.sourceforge.net/libmng/%{name}-%{version}.tar.xz
+# Source0-md5:	3804bf2523af9b4e0670b5982b3bf984
 URL:		http://www.libmng.com/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libjpeg-devel
 BuildRequires:	libtool
-BuildRequires:	zlib-devel
 BuildRequires:	pkg-config
+BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -38,15 +36,10 @@ the libmng package.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
 
-sed -i "s/AM_C_PROTOTYPES//" makefiles/configure.in
+%{__sed} -i "/AM_C_PROTOTYPES/d" makefiles/configure.ac
 
 %build
-cp makefiles/{Makefile.am,configure.in} .
-cp doc/makefiles/Makefile.am doc
-cp doc/man/makefiles/Makefile.am doc/man
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
@@ -64,6 +57,8 @@ install -d $RPM_BUILD_ROOT%{_bindir}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -73,7 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc CHANGES LICENSE README
-%attr(755,root,root) %ghost %{_libdir}/lib*.so.?
+%attr(755,root,root) %ghost %{_libdir}/lib*.so.2
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
 %{_mandir}/man5/*
 
@@ -81,7 +76,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc doc/{doc.readme,libmng.txt,Plan*.png}
 %attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
-%{_includedir}/*
+%{_includedir}/*.h
+%{_pkgconfigdir}/*.pc
 %{_mandir}/man3/*
 
